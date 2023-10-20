@@ -4,11 +4,12 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class FlightsListViewAdapter(private val dataSet: List<FlightModel>) :
+class FlightsListViewAdapter(private val dataSet: List<Flight>) :
     RecyclerView.Adapter<FlightsListViewAdapter.ViewHolder>() {
 
     /**
@@ -20,6 +21,7 @@ class FlightsListViewAdapter(private val dataSet: List<FlightModel>) :
         val fromTextView: TextView
         val toTextView: TextView
         val flyTimeTextView: TextView
+        val planeView: ImageView
 
         init {
             // Define click listener for the ViewHolder's View
@@ -27,6 +29,7 @@ class FlightsListViewAdapter(private val dataSet: List<FlightModel>) :
             fromTextView = view.findViewById(R.id.fromTextView)
             toTextView = view.findViewById(R.id.toTextView)
             flyTimeTextView = view.findViewById(R.id.flyTimeTextView)
+            planeView = view.findViewById(R.id.plane)
         }
     }
 
@@ -43,26 +46,27 @@ class FlightsListViewAdapter(private val dataSet: List<FlightModel>) :
 
         // Get element from your dataset at this position and replace the
         // contents of the view with that element
-        val flightInfos = dataSet[position]
+        val flight = dataSet[position]
 
-        /*
-        val flyNumber = "Flight " + flightInfos.callsign
-        val fromAirport = flightInfos[1]
-        val fromAirportAb = flightInfos[2]
-        val departureDatetime = flightInfos[3]
-        val toAirport = flightInfos[4]
-        val toAirportAb = flightInfos[5]
-        val arrivalDatetime = flightInfos[6]
-        val flyTime = flightInfos[7].replace(':', 'h')
+        val flyNumber = "Flight " + flight.flyNumber
+        val fromAirport = flight.fromAirport ?: ""
+        val fromAirportCode = flight.fromAirportCode
+        val departDatetime = flight.departDatetime
+        val toAirport = flight.toAirport ?: ""
+        val toAirportCode = flight.toAirportCode
+        val arrivalDatetime = flight.arrivalDatetime
+        val flyTime = flight.flyTime
 
-        val textFrom = "From: $fromAirport ($fromAirportAb) $departureDatetime"
-        val textTo = "To: $toAirport ($toAirportAb) $arrivalDatetime"
+        val textFrom = "$fromAirport ($fromAirportCode) $departDatetime"
+        val textTo = "" +
+                "$toAirport ($toAirportCode) $arrivalDatetime"
 
         viewHolder.flighNumberTextView.text = flyNumber
         viewHolder.fromTextView.text = textFrom
         viewHolder.toTextView.text = textTo
         viewHolder.flyTimeTextView.text = flyTime
-         */
+
+        viewHolder.planeView.left += 20 * flight.currentProgress.toInt()
 
         if (position % 2 == 1) {
             viewHolder.itemView.setBackgroundColor(Color.parseColor("#E8F8FF"))

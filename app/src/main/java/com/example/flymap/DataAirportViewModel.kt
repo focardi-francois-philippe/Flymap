@@ -17,20 +17,22 @@ class DataAirportViewModel : ViewModel() {
     private val REQUEST_ARRIVE_URL = BASE_URL+"/flights/arrival"
 
     // Function to make the network request using viewModelScope
-     fun fetchDataFromApDepartArrivei(isArrive : Boolean,airport : String,debut : Int, fin : Int) {
+     fun fetchDataFromApDepartArrive(isArrive: Boolean, airport: String, debut: Long, fin: Long) {
         Log.d("AZERTY","ok")
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 Log.d("AZERTY2","ok")
 
                 val req = if(isArrive) REQUEST_ARRIVE_URL else REQUEST_DEPART_URL
-                val result =  RequestManager.getSuspended("https://opensky-network.org/api/flights/departure?airport=$airport&begin=$debut&end=$fin",
+                val result =  RequestManager.getSuspended(
+                    "$req?airport=$airport&begin=$debut&end=$fin",
                     HashMap())
                 val gson = Gson()
                 val myDataList: List<FlightModel> =  gson.fromJson(result, Array<FlightModel>::class.java).toList()
                 Log.d("result",result!!)
                 flightLiveData.postValue(myDataList) // Update the LiveData with the result
             } catch (e: Exception) {
+                Log.e("flightList", e.localizedMessage)
                 // Handle network request errors here
             }
         }

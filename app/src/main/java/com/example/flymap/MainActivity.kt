@@ -39,8 +39,8 @@ class MainActivity : AppCompatActivity() {
 
 
             val isArrive = switchDepartArrive.isChecked
-            val debut = 1697631222
-            val fin = 1697717622
+            val debut: Long = 1697631222
+            val fin: Long = 1697717622
 
             val intent = Intent(this,FlightsListView::class.java).apply {
                 putExtra("isArrive",isArrive)
