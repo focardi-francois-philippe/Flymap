@@ -1,9 +1,13 @@
 package com.example.flymap
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
 /**
  * Created by sergio on 07/11/2021
  * All rights reserved GoodBarber
  */
+@Parcelize
 data class Airport(
     val code: String,
     val lat: String,
@@ -23,7 +27,7 @@ data class Airport(
     val icao: String,
     val direct_flights: String,
     val carriers: String
-) {
+):Parcelable {
     fun getFormattedName(): String {
         return "$code $city ($country)"
     }

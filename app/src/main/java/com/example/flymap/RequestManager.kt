@@ -13,6 +13,9 @@ import java.net.URL
  */
 class RequestManager {
 
+    private val BASE_URL = "https://opensky-network.org/api"
+    private val REQUEST_DEPART_URL = BASE_URL+"/flights/departure"
+
     interface RequestListener {
         fun onRequestSuccess(result: String?)
         fun onRequestFailed()
