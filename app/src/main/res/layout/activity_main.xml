@@ -7,11 +7,12 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
+
         android:text="FLYMAP"
-
-
         app:layout_constraintBottom_toTopOf="@+id/spinnerAirport"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +55,7 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline"></Switch>
@@ -85,6 +87,7 @@
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
         android:text="Arrivé"
         app:layout_constraintBottom_toBottomOf="@+id/depart_arrive"
         app:layout_constraintStart_toEndOf="@+id/depart_arrive"
@@ -100,35 +103,43 @@
         app:layout_constraintStart_toStartOf="@+id/from_date" />
 
     <TextView
-        android:id="@+id/to_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="To"
-        app:layout_constraintBottom_toTopOf="@+id/to_date"
-        app:layout_constraintEnd_toEndOf="@+id/to_date"
-        app:layout_constraintStart_toStartOf="@+id/to_date" />
-
-    <TextView
         android:id="@+id/from_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp"
         android:background="@drawable/rectangle_border"
         android:padding="8dp"
         android:text="12/10/2022"
-        android:layout_marginBottom="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/search_button"
-        app:layout_constraintEnd_toStartOf="@+id/guidelineVertical"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/to_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rectangle_border"
-        android:padding="8dp"
-        android:text="13/10/2022"
-        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toTopOf="@+id/search_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/guidelineVertical" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/depart_arrive" />
+
+
+    <TextView
+        android:id="@+id/to"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Interval de : 0"
+        app:layout_constraintBottom_toTopOf="@+id/slider"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/slider"></TextView>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/slider"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingEnd="30dp"
+        android:paddingStart="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/search_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:valueFrom="0"
+        android:valueTo="7"
+        android:value="0"
+        android:stepSize="1"
+        app:layout_constraintTop_toBottomOf="@+id/from_date">
+
+    </com.google.android.material.slider.Slider>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

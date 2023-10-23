@@ -1,5 +1,6 @@
 package com.example.flymap
 
+import android.icu.util.DateInterval
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -20,11 +21,23 @@ class MainViewModel: ViewModel() {
 
     private val  airportsList = MutableLiveData(Utils.generateAirportList())
 
-
+    private val intervalJour: MutableLiveData<Int> by lazy {
+        MutableLiveData<Int>(0)
+    }
 
     enum class DateType {
         BEGIN, END
     }
+
+    fun  getIntervalJour() : LiveData<Int>
+    {
+        return  intervalJour
+    }
+    fun  setIntervalJour(interval: Int)
+    {
+        intervalJour.postValue(interval)
+    }
+
 
     fun getBeginDateLiveData(): LiveData<Calendar>{
         return fromCalendar
