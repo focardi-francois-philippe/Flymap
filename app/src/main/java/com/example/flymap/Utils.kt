@@ -1,7 +1,9 @@
 package com.example.flymap
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonParser
@@ -10,6 +12,8 @@ import org.json.JSONArray
 import java.io.*
 import java.nio.charset.Charset
 import java.text.SimpleDateFormat
+import java.time.LocalDate
+import java.time.ZoneOffset
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -192,6 +196,11 @@ class Utils private constructor() {
                     duration.append("0").append(minute).append("min").toString()
                 } else duration.append(minute).append("min").toString()
             }
+        }
+
+        fun dateToUnixEpoch(date: Date) : Long
+        {
+            return date.time  / 1000
         }
     }
 }
