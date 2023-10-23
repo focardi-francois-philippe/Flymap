@@ -101,8 +101,7 @@ class RequestManager {
                     "RequestManager",
                     "Request[GET]: \nURL: $finalSourceUrl\nNb Param: $c"
                 )
-                val reader =
-                    BufferedReader(InputStreamReader(httpURLConnection.inputStream))
+                val reader = BufferedReader(InputStreamReader(httpURLConnection.inputStream))
                 var line: String?
                 while (reader.readLine().also { line = it } != null) {
                     result.append(line)

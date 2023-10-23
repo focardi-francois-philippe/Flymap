@@ -8,10 +8,14 @@ import java.util.Date
 
 class MainViewModel: ViewModel() {
     private val fromCalendar: MutableLiveData<Calendar> by lazy {
-        MutableLiveData<Calendar>(Calendar.getInstance())
+        val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_MONTH,-1)//Car l'api fonctionne seulement a maximum avec la date de la veille
+        MutableLiveData<Calendar>(c)
     }
     private val toCalendar: MutableLiveData<Calendar> by lazy {
-        MutableLiveData<Calendar>(Calendar.getInstance())
+        val c = Calendar.getInstance()
+        c.add(Calendar.DAY_OF_MONTH,-1)//Car l'api fonctionne seulement a maximum avec la date de la veille
+        MutableLiveData<Calendar>(c)
     }
 
     private val  airportsList = MutableLiveData(Utils.generateAirportList())

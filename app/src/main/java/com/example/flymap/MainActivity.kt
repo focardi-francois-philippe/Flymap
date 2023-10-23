@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
@@ -56,6 +57,7 @@ class MainActivity : AppCompatActivity() {
 
         beginDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.BEGIN) }
         endDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.END) }
+
         searchButton.setOnClickListener {
             val AirportIndex = spinnerAirport.selectedItemPosition
             val airportSelected = viewModelMain.getAirportLiveData().value!![AirportIndex]
@@ -80,29 +82,49 @@ class MainActivity : AppCompatActivity() {
         }
 
     }
-        private fun showDatePickerDialog(dateType: MainViewModel.DateType) {
-            // Date Select Listener.
-            val dateSetListener =
-                DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
-                    val calendar = Calendar.getInstance()
-                    calendar.set(Calendar.YEAR, year)
-                    calendar.set(Calendar.MONTH, monthOfYear)
-                    calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-                    viewModelMain.updateCalendarLiveData(dateType, calendar)
-                }
+    private fun showDatePickerDialog(dateType: MainViewModel.DateType) {
+        // Date Select Listener.
+        val dateSetListener = DatePickerDialog.OnDateSetListener { view, year, monthOfYear, dayOfMonth ->
+            val calendar = Calendar.getInstance()
+            calendar.add(Calendar.DAY_OF_MONTH,-1)
 
-            val currentCalendar = if (dateType == MainViewModel.DateType.BEGIN) viewModelMain.getBeginDateLiveData().value else viewModelMain.getEndDateLiveData().value
+            calendar.set(Calendar.YEAR, year)
+            calendar.set(Calendar.MONTH, monthOfYear)
+            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-            val datePickerDialog = DatePickerDialog(
-                this,
-                dateSetListener,
-                currentCalendar!!.get(Calendar.YEAR),
-                currentCalendar.get(Calendar.MONTH),
-                currentCalendar.get(Calendar.DAY_OF_MONTH)
-            )
-            datePickerDialog.show()
+
+            val maxDate = Calendar.getInstance()
+            maxDate.add(Calendar.DAY_OF_MONTH,-1)
+
+
+            if (calendar <= maxDate) {
+                viewModelMain.updateCalendarLiveData(dateType, calendar)
+            } else {
+                // Affichez un message d'erreur ou ne faites rien
+                Toast.makeText(this, "Date non valide (doit être à partir d'hier)", Toast.LENGTH_SHORT).show()
+            }
         }
 
+        val currentCalendar = if (dateType == MainViewModel.DateType.BEGIN) viewModelMain.getBeginDateLiveData().value else viewModelMain.getEndDateLiveData().value
 
+        val datePickerDialog = DatePickerDialog(
+            this,
+            dateSetListener,
+            currentCalendar!!.get(Calendar.YEAR),
+            currentCalendar.get(Calendar.MONTH),
+            currentCalendar.get(Calendar.DAY_OF_MONTH)
+        )
 
+        // Date maximale (aujourd'hui)
+        val today = Calendar.getInstance()
+        today.add(Calendar.DAY_OF_MONTH,-1)
+        datePickerDialog.datePicker.maxDate = today.timeInMillis
+
+        datePickerDialog.show()
     }
+
+
+
+
+
+}

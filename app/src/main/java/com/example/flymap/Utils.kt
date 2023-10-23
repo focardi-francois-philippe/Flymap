@@ -202,5 +202,36 @@ class Utils private constructor() {
         {
             return date.time  / 1000
         }
+
+        fun convertTimestampToDuration(d1: Long, d2: Long): String {
+            val date1 = Date(d1 * 1000)
+            val date2 = Date(d2 * 1000)
+            val diff = date1.time - date2.time
+
+            val seconds = diff / 1000
+            val minutes = seconds / 60
+            val hours = minutes / 60
+
+            return if (hours >= 1)
+                hours.toString() + "h" + (minutes % 60).toString().padStart(2, '0')
+            else
+                minutes.toString() + "m"
+        }
+
+        fun getCurrentProgress(arrival: Long, depart: Long): Float {
+            val curDate = Calendar.getInstance().time.seconds
+
+            val arrivalDate = Date(arrival)
+            val departDate = Date(depart)
+
+            val progress: Float = (arrivalDate.time - curDate.toFloat()) / (arrivalDate.time - departDate.time)
+            return if (progress >= 0) progress else 0f
+        }
+        fun convertTimestampToDate(timestamp: Long): String {
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+            val date = Date(timestamp * 1000) // Convert seconds to milliseconds
+
+            return dateFormat.format(date)
+        }
     }
 }
