@@ -1,6 +1,7 @@
 package com.example.flymap
 
 data class Flight(
+    val icao24: String,
     val flyNumber: String,
     val fromAirport: String?,
     val fromAirportCode: String?,

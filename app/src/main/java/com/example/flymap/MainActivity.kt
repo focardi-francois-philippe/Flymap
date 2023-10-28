@@ -92,6 +92,7 @@ class MainActivity : AppCompatActivity() {
                   Utils.dateToString(viewModelMain.getEndDateLiveData().value!!.time)
                ))
 
+
             val intent = Intent(this, FlightsListView::class.java).apply {
                 putExtra("isArrive", isArrive)
                 putExtra("debut", debut)
