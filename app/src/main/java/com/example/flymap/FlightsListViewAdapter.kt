@@ -1,6 +1,7 @@
 package com.example.flymap
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +10,14 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 
-class FlightsListViewAdapter(private val dataSet: List<Flight>) :
+class FlightsListViewAdapter(private val dataSet: List<Flight>, val cellClickListener: OnCellClickListener) :
     RecyclerView.Adapter<FlightsListViewAdapter.ViewHolder>() {
 
+    interface OnCellClickListener {
+        fun onCellClicked(flight: Flight)
+    }
     /**
+     *
      * Provide a reference to the type of views that you are using
      * (custom ViewHolder)
      */
@@ -67,7 +72,10 @@ class FlightsListViewAdapter(private val dataSet: List<Flight>) :
         viewHolder.flyTimeTextView.text = flyTime
 
         viewHolder.planeView.left += 20 * flight.currentProgress.toInt()
-
+        viewHolder.itemView.setOnClickListener {view->
+            cellClickListener.onCellClicked(flight)
+            Log.d("TESTTT",flight.toString())
+        }
         if (position % 2 == 1) {
             viewHolder.itemView.setBackgroundColor(Color.parseColor("#E8F8FF"))
         }

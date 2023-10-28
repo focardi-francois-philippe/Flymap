@@ -10,7 +10,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class DataAirportViewModel : ViewModel() {
+
     val flightLiveData = MutableLiveData<List<FlightModel>>()
+    private val clickedFlightLiveData = MutableLiveData<Flight>()
 
     val activityDataAirport = MutableLiveData<DataAirportForFlightCell>()
     private val BASE_URL = "https://opensky-network.org/api"
@@ -48,6 +50,15 @@ class DataAirportViewModel : ViewModel() {
         return activityDataAirport
     }
 
+    fun getClickedFlightLiveData() : LiveData<Flight>
+    {
+        return clickedFlightLiveData
+    }
+    fun  setClickedFlightLiveData(flight: Flight)
+    {
+        clickedFlightLiveData.postValue(flight)
+        Log.d("LIVE DATAAA","DATJAHAHF")
+    }
     fun getflightLiveData() : LiveData<List<FlightModel>>{
         return flightLiveData
     }

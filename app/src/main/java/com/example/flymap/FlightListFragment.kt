@@ -22,7 +22,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FlightListFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FlightListFragment : Fragment() {
+class FlightListFragment : Fragment() , FlightsListViewAdapter.OnCellClickListener {
     private lateinit var viewModelFlight : DataAirportViewModel
     lateinit var dataAirportForFlightCell : DataAirportForFlightCell
     // TODO: Rename and change types of parameters
@@ -81,7 +81,7 @@ class FlightListFragment : Fragment() {
                 Log.d("OKKK",it.toString())
             })
 
-            val customAdapter = FlightsListViewAdapter(flights)
+            val customAdapter = FlightsListViewAdapter(flights,this)
             val recyclerView = view.findViewById<RecyclerView>(R.id.flightsList)
             recyclerView.adapter = customAdapter
             recyclerView.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
@@ -116,5 +116,9 @@ class FlightListFragment : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+    }
+
+    override fun onCellClicked(flight: Flight) {
+        viewModelFlight.setClickedFlightLiveData(flight)
     }
 }
