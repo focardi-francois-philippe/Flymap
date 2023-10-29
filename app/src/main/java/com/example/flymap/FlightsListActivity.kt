@@ -3,6 +3,8 @@ package com.example.flymap
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentContainerView
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 
 class FlightsListActivity : AppCompatActivity() {
@@ -10,8 +12,9 @@ class FlightsListActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flights_list_activity)
-
-
+        Log.d("OK","TABLETTE")
+        val isTablet = findViewById<FragmentContainerView>(R.id.fragment_map_container) != null
+        Log.d("OK","TABLETTE PASSER")
 
         //val flyNumber = intent.getStringExtra("flyNumber")
         //val fromAirport = intent.getParcelableExtra<Airport>("fromAirport")
@@ -28,39 +31,19 @@ class FlightsListActivity : AppCompatActivity() {
             viewModelFlight.setActivityDataAirport(DataAirportForFlightCell(isArrive,airport.city,airport.code))
         }
         viewModelFlight.fetchDataFromApDepartArrive(isArrive,airport!!.icao, departureTs, arrivalTs)
-        /*
-                viewModelFlight.getflightLiveData().observe(this, Observer {
-                    val dataset = it
-                    val flights = mutableListOf<Flight>()
 
-                    Log.d("flightList", "BIBI")
-                }
+        viewModelFlight.getClickedFlightLiveData().observe(this, Observer {
 
-                    dataset.forEach {
-                        val fromAirport = if (isArrive) it.estDepartureAirport else airport.city
-                        val fromAirportCode = if (isArrive) it.estDepartureAirport else airport.code
-                        val toAirport = if (isArrive) airport.city else it.estArrivalAirport
-                        val toAirportCode = if (isArrive) airport.code else it.estDepartureAirport
-                        val flight = Flight(
-                            it.callsign,
-                            fromAirport,
-                            fromAirportCode,
-                            toAirport,
-                            toAirportCode,
-                           Utils.convertTimestampToDate(it.firstSeen),
-                           Utils.convertTimestampToDate(it.lastSeen),
-                           Utils.convertTimestampToDuration(it.lastSeen, it.firstSeen),
-                           Utils.getCurrentProgress(it.lastSeen, it.firstSeen)
-                        )
-                        flights.add(flight)
-                    }
 
-                    Log.d("flightList", flights.size.toString())
-                    val customAdapter = FlightsListViewAdapter(flights)
+            if (!isTablet)
+            {
+                val fragmentMap = FlightMapFragement()
+                this.supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_list_container, fragmentMap)
+                    .addToBackStack(null)  // Pour permettre la navigation en arrière si nécessaire
+                    .commit()
+            }
 
-                    val recyclerView: RecyclerView = findViewById(R.id.flightsList)
-                    recyclerView.adapter = customAdapter
-                    recyclerView.layoutManager = LinearLayoutManager(this)
-                    })*/
+        })
     }
 }

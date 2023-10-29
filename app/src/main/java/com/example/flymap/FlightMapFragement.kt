@@ -14,6 +14,7 @@ import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.PolylineOptions
+import java.util.Random
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -88,12 +89,12 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
         viewModelDataMapFlight.getLatLngLstForMap().observe(viewLifecycleOwner,Observer{
 
-
+            val color = intArrayOf(Color.BLUE,Color.BLACK,Color.GREEN)
             Log.d("OK MAP ICI","ON DESSINE ICI")
             // Créez une PolylineOptions pour représenter la ligne du trajet
             val polylineOptions = PolylineOptions()
                 .addAll(it)  // Ajoutez la liste de points au trajet
-                .color(Color.BLUE)      // Couleur de la ligne
+                .color(color.get(Random().nextInt(3)))      // Couleur de la ligne
                 .width(20f)              // Épaisseur de la ligne en pixels
 
             // Ajoutez la ligne du trajet à la carte

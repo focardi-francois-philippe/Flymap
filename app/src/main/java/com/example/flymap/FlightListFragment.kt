@@ -121,10 +121,6 @@ class FlightListFragment : Fragment() , FlightsListViewAdapter.OnCellClickListen
 
     override fun onCellClicked(flight: Flight) {
         viewModelFlight.setClickedFlightLiveData(flight)
-        val fragmentMap = FlightMapFragement()
-        requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.fragment_list_container, fragmentMap)
-            .addToBackStack(null)  // Pour permettre la navigation en arrière si nécessaire
-            .commit()
+
     }
 }
