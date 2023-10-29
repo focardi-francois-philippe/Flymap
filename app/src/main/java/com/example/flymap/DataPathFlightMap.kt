@@ -1,10 +1,10 @@
 package com.example.flymap
 
 data class DataPathFlightMap(
-    val time:Int,
-    val latitude:Float?,
-    val longitude:Float?,
-    val baro_altitude:Float?,
-    val true_track:Float?,
-    val on_ground:Boolean
+    val time:Long,
+    val latitude:Number?,
+    val longitude:Number?,
+    val baro_altitude:Number?,
+    val true_track:Number?,
+    val on_ground:Boolean?
 )

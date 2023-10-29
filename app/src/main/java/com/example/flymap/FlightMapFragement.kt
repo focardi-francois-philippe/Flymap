@@ -64,8 +64,8 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
         viewModelFlight.getClickedFlightLiveData().observe(viewLifecycleOwner, Observer {
 
             // Liste de coordonnées de points de trajet (LatLng)
-            Log.d("OK ","OK ")
-            viewModelDataMapFlight.fetchDataFromIcao24(it.icao24)
+            Log.d("OK ",it.icao24)
+            viewModelDataMapFlight.fetchDataFromIcao24(it.icao24,requireContext())
 
 
 
@@ -73,28 +73,34 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
         })
         viewModelDataMapFlight.getMapFlightData().observe(viewLifecycleOwner, Observer {
             Log.d("OKBGGG", "OKKKK")
-            val pointsOfRoute = listOf(
-                LatLng(37.6147, -122.3655),
-                LatLng(37.6155, -122.3665),
-                LatLng(37.6160, -122.3670),
-                // Ajoutez d'autres coordonnées de points de trajet ici...
-            )
+            val lstLatLng = ArrayList<LatLng>()
 
-            // Créez une PolylineOptions pour représenter la ligne du trajet
-            val polylineOptions = PolylineOptions()
-                .addAll(pointsOfRoute)  // Ajoutez la liste de points au trajet
-                .color(Color.BLUE)      // Couleur de la ligne
-                .width(5f)              // Épaisseur de la ligne en pixels
+            for(el in it.path)
+            {
 
-            // Ajoutez la ligne du trajet à la carte
-            googleMap.addPolyline(polylineOptions)
+                lstLatLng.add(LatLng( el.get(1).toString().toDouble(),el.get(2).toString().toDouble()))
 
+            }
+            viewModelDataMapFlight.setLatLngLstForMap(lstLatLng)
         })
+
     }
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+        val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
+        viewModelDataMapFlight.getLatLngLstForMap().observe(viewLifecycleOwner,Observer{
 
 
+            Log.d("OK MAP ICI","ON DESSINE ICI")
+            // Créez une PolylineOptions pour représenter la ligne du trajet
+            val polylineOptions = PolylineOptions()
+                .addAll(it)  // Ajoutez la liste de points au trajet
+                .color(Color.BLUE)      // Couleur de la ligne
+                .width(20f)              // Épaisseur de la ligne en pixels
+
+            // Ajoutez la ligne du trajet à la carte
+            googleMap.addPolyline(polylineOptions)
+        })
     }
 
     override fun onResume() {
