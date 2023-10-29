@@ -1,9 +1,7 @@
 package com.example.flymap
 
-import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
@@ -12,16 +10,10 @@ import android.widget.Spinner
 import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.slider.Slider
 import java.text.SimpleDateFormat
-import java.time.DayOfWeek
-import java.time.LocalDate
 import java.util.Calendar
-import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModelMain :MainViewModel
@@ -93,7 +85,7 @@ class MainActivity : AppCompatActivity() {
                ))
 
 
-            val intent = Intent(this, FlightsListView::class.java).apply {
+            val intent = Intent(this, FlightsListActivity::class.java).apply {
                 putExtra("isArrive", isArrive)
                 putExtra("debut", debut)
                 putExtra("fin", fin)
