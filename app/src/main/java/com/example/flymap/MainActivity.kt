@@ -1,9 +1,11 @@
 package com.example.flymap
 
+import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Spinner
@@ -17,10 +19,19 @@ import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModelMain :MainViewModel
-
+    private lateinit var modalNoConnection :AlertDialog
+    private lateinit var networkManager: NetworkManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.d("OK CREATE AVANT MODAL","OK")
+        createNonCancelableAlertDialog()
+        Log.d("OK CREATE APRES MODAL","OK")
+        networkManager = NetworkManager(this)
+
+
+
         val slider = findViewById<Slider>(R.id.slider)
         viewModelMain = ViewModelProvider(this).get(MainViewModel::class.java)
         val searchButton = findViewById<Button>(R.id.search_button)
@@ -39,7 +50,23 @@ class MainActivity : AppCompatActivity() {
 
         spinnerAirport.adapter = spinnerAdapter
 
+        networkManager.observe(this){
 
+
+            Log.d("VALUE IT",it!!.toString())
+            Log.d("VALUE isShowing",modalNoConnection.isShowing.toString())
+            if(!it)
+            {
+                Log.d("VALUE IT LOST",it!!.toString())
+
+                if (!modalNoConnection.isShowing)
+                    modalNoConnection.show()
+            }else
+            {
+                if (modalNoConnection.isShowing)
+                    modalNoConnection.dismiss()
+            }
+        }
 
         viewModelMain.getBeginDateLiveData().observe(this) {
             beginDateLabel.text = Utils.dateToString(it.time)
@@ -139,6 +166,23 @@ class MainActivity : AppCompatActivity() {
 
         datePickerDialog.show()
     }
+    private fun createNonCancelableAlertDialog() {
+        Log.d("CREATION MODAL","CREATION MODAL")
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle(
+            "Titre de la boîte de dialogue")
+        alertDialogBuilder.setMessage("Message de la boîte de dialogue")
+
+        // Bouton "OK"
+
+        // Désactivez la possibilité de fermeture de la boîte de dialogue
+        alertDialogBuilder.setCancelable(false)
+        modalNoConnection = alertDialogBuilder.create()
+
+
+
+    }
+
 
 
 
