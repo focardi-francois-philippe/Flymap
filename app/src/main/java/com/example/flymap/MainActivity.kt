@@ -85,6 +85,8 @@ class MainActivity : AppCompatActivity() {
             val copieCalendar = Calendar.getInstance()
             copieCalendar.timeInMillis = calendar!!.timeInMillis
             val maxDate = Calendar.getInstance()
+
+            maxDate.add(Calendar.DAY_OF_MONTH,-1)
             copieCalendar.add(Calendar.DAY_OF_MONTH,value.toInt())
             if (copieCalendar<= maxDate)
             {
