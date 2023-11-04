@@ -1,5 +1,6 @@
 package com.example.flymap
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
@@ -9,9 +10,13 @@ import androidx.lifecycle.ViewModelProvider
 
 class FlightsListActivity : AppCompatActivity() {
 
+    private lateinit var modalNoConnection :AlertDialog
+    private lateinit var networkManager: NetworkManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.flights_list_activity)
+        createNonCancelableAlertDialog()
+        networkManager = NetworkManager(this)
         Log.d("OK","TABLETTE")
         val isTablet = findViewById<FragmentContainerView>(R.id.fragment_map_container) != null
         Log.d("OK","TABLETTE PASSER")
@@ -27,10 +32,29 @@ class FlightsListActivity : AppCompatActivity() {
 
         Log.d("airport",airport.toString())
 
+        networkManager.observe(this){
+
+
+            Log.d("VALUE IT",it!!.toString())
+            Log.d("VALUE isShowing",modalNoConnection.isShowing.toString())
+            if(!it)
+            {
+                Log.d("VALUE IT LOST",it!!.toString())
+
+                if (!modalNoConnection.isShowing)
+                    modalNoConnection.show()
+            }else
+            {
+                if (modalNoConnection.isShowing)
+                    modalNoConnection.dismiss()
+            }
+        }
         if (airport != null) {
             viewModelFlight.setActivityDataAirport(DataAirportForFlightCell(isArrive,airport.city,airport.code))
         }
         viewModelFlight.fetchDataFromApDepartArrive(isArrive,airport!!.icao, departureTs, arrivalTs)
+
+
 
         viewModelFlight.getClickedFlightLiveData().observe(this, Observer {
 
@@ -45,5 +69,21 @@ class FlightsListActivity : AppCompatActivity() {
             }
 
         })
+    }
+    private fun createNonCancelableAlertDialog() {
+        Log.d("CREATION MODAL","CREATION MODAL")
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle(
+            "Perte de la connexion")
+        alertDialogBuilder.setMessage("Vous devez disposer d'une connexion internet pour utiliser l'application")
+
+        // Bouton "OK"
+
+        // Désactivez la possibilité de fermeture de la boîte de dialogue
+        alertDialogBuilder.setCancelable(false)
+        modalNoConnection = alertDialogBuilder.create()
+
+
+
     }
 }

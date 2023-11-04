@@ -170,8 +170,8 @@ class MainActivity : AppCompatActivity() {
         Log.d("CREATION MODAL","CREATION MODAL")
         val alertDialogBuilder = AlertDialog.Builder(this)
         alertDialogBuilder.setTitle(
-            "Titre de la boîte de dialogue")
-        alertDialogBuilder.setMessage("Message de la boîte de dialogue")
+            "Perte de la connexion")
+        alertDialogBuilder.setMessage("Vous devez disposer d'une connexion internet pour utiliser l'application")
 
         // Bouton "OK"
 
