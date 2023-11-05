@@ -3,17 +3,25 @@ package com.example.flymap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Random
 
 // TODO: Rename parameter arguments, choose names that match
@@ -53,9 +61,15 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("map fragement OK2","map fragement OK2")
+        val button = view.findViewById<FloatingActionButton>(R.id.button)
+        val infoList = view.findViewById<RecyclerView>(R.id.infoList)
+        val lastFlightsList = view.findViewById<RecyclerView>(R.id.lastFlights)
         mapView = view.findViewById<MapView>(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+
+        val snapHelper = LinearSnapHelper()
+        snapHelper.attachToRecyclerView(lastFlightsList)
 
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
 
@@ -64,9 +78,9 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
 
             // Liste de coordonnées de points de trajet (LatLng)
             Log.d("OK ",it.icao24)
-            viewModelDataMapFlight.fetchDataFromIcao24(it.icao24,requireContext())
-
-
+            viewModelDataMapFlight.fetchDataFromIcao24(it.icao24, requireContext())
+            viewModelDataMapFlight.fetchFlyStateByIcao(it.icao24)
+            viewModelDataMapFlight.fetchLastFlightsByIcao(it.icao24)
 
             //viewModelDataMapFlight.fetchDataFromIcao24(it.icao24)
         })
@@ -74,16 +88,43 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             Log.d("OKBGGG", "OKKKK")
             val lstLatLng = ArrayList<LatLng>()
 
-            for(el in it.path)
-            {
-
-                lstLatLng.add(LatLng( el.get(1).toString().toDouble(),el.get(2).toString().toDouble()))
-
+            for(el in it.path) {
+                lstLatLng.add(LatLng(el.get(1).toString().toDouble(), el.get(2).toString().toDouble()))
             }
             viewModelDataMapFlight.setLatLngLstForMap(lstLatLng)
         })
 
+        button.setOnClickListener { _ ->
+            viewModelDataMapFlight.getFlyStateData().observe(viewLifecycleOwner, Observer {
+                if (it.states.isEmpty())
+                    return@Observer
+
+                val latLng = LatLng(it.states.first().latitude, it.states.first().longitude)
+                googleMap.addMarker(
+                    MarkerOptions()
+                        .position(latLng)
+                        .title("Fly")
+                )
+                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+
+                val dataset: List<Pair<String, Any>> = it.states.first().serializeToMap().toList()
+                val infoAdapter = FlyInfosViewAdapter(dataset)
+                infoList.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.VERTICAL, false)
+                infoList.adapter = infoAdapter
+                toggleViewVisibility(infoList)
+            })
+        }
+
+        viewModelDataMapFlight.getLastFlightsData().observe(viewLifecycleOwner, Observer {
+            val dataset: List<LastFlights> = it.toList()
+            val infoAdapter = LastFlightsViewAdapter(dataset)
+            Log.d("dataset", dataset.toString())
+            lastFlightsList.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
+            lastFlightsList.adapter = infoAdapter
+            toggleViewVisibility(lastFlightsList)
+        })
     }
+
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
@@ -100,6 +141,13 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             // Ajoutez la ligne du trajet à la carte
             googleMap.addPolyline(polylineOptions)
         })
+    }
+
+    fun toggleViewVisibility(view: View) {
+        if (view.visibility == View.INVISIBLE)
+            view.visibility = View.VISIBLE
+        else if (view.visibility == View.VISIBLE)
+            view.visibility = View.INVISIBLE
     }
 
     override fun onResume() {

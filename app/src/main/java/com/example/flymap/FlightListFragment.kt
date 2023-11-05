@@ -121,6 +121,5 @@ class FlightListFragment : Fragment() , FlightsListViewAdapter.OnCellClickListen
 
     override fun onCellClicked(flight: Flight) {
         viewModelFlight.setClickedFlightLiveData(flight)
-
     }
 }

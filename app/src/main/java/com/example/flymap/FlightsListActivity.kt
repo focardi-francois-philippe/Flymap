@@ -34,7 +34,6 @@ class FlightsListActivity : AppCompatActivity() {
 
         networkManager.observe(this){
 
-
             Log.d("VALUE IT",it!!.toString())
             Log.d("VALUE isShowing",modalNoConnection.isShowing.toString())
             if(!it)
@@ -54,11 +53,7 @@ class FlightsListActivity : AppCompatActivity() {
         }
         viewModelFlight.fetchDataFromApDepartArrive(isArrive,airport!!.icao, departureTs, arrivalTs)
 
-
-
         viewModelFlight.getClickedFlightLiveData().observe(this, Observer {
-
-
             if (!isTablet)
             {
                 val fragmentMap = FlightMapFragement()
@@ -67,7 +62,6 @@ class FlightsListActivity : AppCompatActivity() {
                     .addToBackStack(null)  // Pour permettre la navigation en arrière si nécessaire
                     .commit()
             }
-
         })
     }
     private fun createNonCancelableAlertDialog() {
@@ -82,8 +76,5 @@ class FlightsListActivity : AppCompatActivity() {
         // Désactivez la possibilité de fermeture de la boîte de dialogue
         alertDialogBuilder.setCancelable(false)
         modalNoConnection = alertDialogBuilder.create()
-
-
-
     }
 }

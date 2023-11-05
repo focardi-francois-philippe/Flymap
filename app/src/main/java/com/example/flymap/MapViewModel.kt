@@ -14,16 +14,49 @@ import kotlinx.coroutines.launch
 class MapViewModel:ViewModel() {
     val mapFlightData = MutableLiveData<DataMapFlight>()
     val latLngLstForMap = MutableLiveData<List<LatLng>>()
+    val flyStateData = MutableLiveData<FlyStateModel>()
+    val lastFlightsData = MutableLiveData<Array<LastFlights>>()
+
     private val BASE_URL = "https://opensky-network.org/api"
-    private val REQUEST_TRACKS = BASE_URL+"/tracks/all"
-    fun fetchDataFromIcao24(icao: String,context: Context)
-    {
+    private val REQUEST_TRACKS = BASE_URL + "/tracks/all"
+
+    fun fetchLastFlightsByIcao(icao24: String) {
+        val nowTs = (System.currentTimeMillis() / 1000).toInt() - 3600
+        val beginTs = nowTs - 259200 // 3 days in seconds
+        val url = BASE_URL + "/flights/aircraft?icao24=${icao24}&begin=${beginTs}&end=${nowTs}"
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
+                val result =  RequestManager.getSuspended(url, HashMap())
+                Log.d("result", result.toString())
+                val gson = Gson()
+                val myDataList: Array<LastFlights> = gson.fromJson(result, Array<LastFlights>::class.java)
+                lastFlightsData.postValue(myDataList) // Update the LiveData with the result
+                Log.d("result", myDataList.toString())
+            } catch (e: Exception) {
+                Log.e("flightList", e.localizedMessage)
+            }
+        }
+    }
+    fun fetchFlyStateByIcao(icao24: String) {
+        val url = BASE_URL + "/states/all?icao24=${icao24}"
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result =  RequestManager.getSuspended(url, HashMap())
+                Log.d("result", result.toString())
+                val gson = Gson()
+                val myDataList: FlyStateModelGson = gson.fromJson(result, FlyStateModelGson::class.java)
+                flyStateData.postValue(myDataList.toModel()) // Update the LiveData with the result
+                Log.d("result", myDataList.toString())
+            } catch (e: Exception) {
+                Log.e("flightList", e.localizedMessage)
+            }
+        }
+    }
+    fun fetchDataFromIcao24(icao: String,context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
                 Log.d("AZERTY2","ok")
-
-
 
                 //val result =  RequestManager.getSuspended(
                 //    "$REQUEST_TRACKS?icao24=$icao&time=0",
@@ -45,7 +78,7 @@ class MapViewModel:ViewModel() {
     }
     fun getMapFlightData() : LiveData<DataMapFlight>
     {
-        return  mapFlightData
+        return mapFlightData
     }
 
     fun getLatLngLstForMap(): LiveData<List<LatLng>>
@@ -57,5 +90,13 @@ class MapViewModel:ViewModel() {
         latLngLstForMap.postValue(latLng)
     }
 
+    fun getFlyStateData(): LiveData<FlyStateModel>
+    {
+        return  flyStateData
+    }
 
+    fun getLastFlightsData(): LiveData<Array<LastFlights>>
+    {
+       return lastFlightsData
+    }
 }

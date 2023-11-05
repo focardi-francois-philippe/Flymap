@@ -72,7 +72,7 @@ class FlightsListViewAdapter(private val dataSet: List<Flight>, val cellClickLis
         viewHolder.flyTimeTextView.text = flyTime
 
         viewHolder.planeView.left += 20 * flight.currentProgress.toInt()
-        viewHolder.itemView.setOnClickListener {view->
+        viewHolder.itemView.setOnClickListener { view->
             cellClickListener.onCellClicked(flight)
             Log.d("TESTTT",flight.toString())
         }

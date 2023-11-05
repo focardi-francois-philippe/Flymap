@@ -82,21 +82,27 @@ class MainActivity : AppCompatActivity() {
         beginDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.BEGIN) }
         //endDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.END) }
 
+        switchDepartArrive.setOnCheckedChangeListener { compoundButton, b ->
+            slider.value = 0f
+        }
+
         slider.addOnChangeListener {slider, value, fromUser ->
             val calendar = viewModelMain.getBeginDateLiveData().value
             val copieCalendar = Calendar.getInstance()
             copieCalendar.timeInMillis = calendar!!.timeInMillis
             val maxDate = Calendar.getInstance()
 
-            maxDate.add(Calendar.DAY_OF_MONTH,-1)
+            if (switchDepartArrive.isChecked)
+                maxDate.add(Calendar.DAY_OF_MONTH, -1)
+            else
+                maxDate.add(Calendar.DAY_OF_MONTH, 2)
             copieCalendar.add(Calendar.DAY_OF_MONTH,value.toInt())
-            if (copieCalendar<= maxDate)
-            {
+            if (copieCalendar<= maxDate) {
                 viewModelMain.setIntervalJour(value.toInt())
                 viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,copieCalendar)
                 slider.value = value
-            }else
-            {
+            }
+            else {
                 slider.value = value -1
             }
 
