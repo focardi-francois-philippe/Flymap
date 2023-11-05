@@ -70,11 +70,13 @@ class MainActivity : AppCompatActivity() {
 
         viewModelMain.getBeginDateLiveData().observe(this) {
             beginDateLabel.text = Utils.dateToString(it.time)
+            slider.value = 0F
         }
 
 
         viewModelMain.getEndDateLiveData().observe(this) {
             intervalTextView.text = "To : " + Utils.dateToString(it.time)
+
         }
 
         beginDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.BEGIN) }
@@ -96,7 +98,6 @@ class MainActivity : AppCompatActivity() {
             }else
             {
                 slider.value = value -1
-                Toast.makeText(this, "Impossible de depasser la limite", Toast.LENGTH_SHORT).show()
             }
 
         }
@@ -145,9 +146,7 @@ class MainActivity : AppCompatActivity() {
 
                 viewModelMain.updateCalendarLiveData(dateType, calendar)
                 viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,calendar)
-            } else {
-                // Affichez un message d'erreur ou ne faites rien
-                Toast.makeText(this, "Date non valide (doit être à partir d'hier)", Toast.LENGTH_SHORT).show()
+
             }
         }
 
