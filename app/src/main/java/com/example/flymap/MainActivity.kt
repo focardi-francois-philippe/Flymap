@@ -15,12 +15,14 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.slider.Slider
 import java.text.SimpleDateFormat
+import java.time.DayOfWeek
 import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
     private lateinit var viewModelMain :MainViewModel
     private lateinit var modalNoConnection :AlertDialog
     private lateinit var networkManager: NetworkManager
+    private var isArrive = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -83,7 +85,15 @@ class MainActivity : AppCompatActivity() {
         //endDateLabel.setOnClickListener { showDatePickerDialog(MainViewModel.DateType.END) }
 
         switchDepartArrive.setOnCheckedChangeListener { compoundButton, b ->
-            slider.value = 0f
+            isArrive = switchDepartArrive.isChecked
+            if (isArrive)
+            {
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_MONTH,-1)
+                viewModelMain.updateCalendarLiveData(MainViewModel.DateType.BEGIN,calendar)
+                viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,calendar)
+            }
+
         }
 
         slider.addOnChangeListener {slider, value, fromUser ->
@@ -92,19 +102,31 @@ class MainActivity : AppCompatActivity() {
             copieCalendar.timeInMillis = calendar!!.timeInMillis
             val maxDate = Calendar.getInstance()
 
-            if (switchDepartArrive.isChecked)
-                maxDate.add(Calendar.DAY_OF_MONTH, -1)
+            maxDate.add(Calendar.DAY_OF_MONTH,-1)
+
+            if (isArrive)
+            {
+                copieCalendar.add(Calendar.DAY_OF_MONTH,value.toInt())
+                if (copieCalendar<= maxDate) {
+
+                    viewModelMain.setIntervalJour(value.toInt())
+                    slider.value = value
+                    viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,copieCalendar)
+                }
+                else {
+
+                    slider.value = value -1
+
+                }
+            }
             else
-                maxDate.add(Calendar.DAY_OF_MONTH, 2)
-            copieCalendar.add(Calendar.DAY_OF_MONTH,value.toInt())
-            if (copieCalendar<= maxDate) {
+            {
+
                 viewModelMain.setIntervalJour(value.toInt())
+                copieCalendar.add(Calendar.DAY_OF_MONTH,value.toInt())
                 viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,copieCalendar)
-                slider.value = value
             }
-            else {
-                slider.value = value -1
-            }
+
 
         }
         searchButton.setOnClickListener {
@@ -144,16 +166,25 @@ class MainActivity : AppCompatActivity() {
             calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
 
-            val maxDate = Calendar.getInstance()
-            maxDate.add(Calendar.DAY_OF_MONTH,-1)
 
 
-            if (calendar <= maxDate) {
-
+            if (isArrive)
+            {
+                val maxDate = Calendar.getInstance()
+                maxDate.add(Calendar.DAY_OF_MONTH,-1)
+                if (calendar <= maxDate) {
+                    viewModelMain.updateCalendarLiveData(dateType, calendar)
+                    viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,calendar)
+                }
+            }
+            else
+            {
                 viewModelMain.updateCalendarLiveData(dateType, calendar)
                 viewModelMain.updateCalendarLiveData(MainViewModel.DateType.END,calendar)
 
             }
+
+
         }
 
         val currentCalendar = if (dateType == MainViewModel.DateType.BEGIN) viewModelMain.getBeginDateLiveData().value else viewModelMain.getEndDateLiveData().value
