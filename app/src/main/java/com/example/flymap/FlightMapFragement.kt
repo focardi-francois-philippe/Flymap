@@ -3,17 +3,16 @@ package com.example.flymap
 import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SnapHelper
+import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
@@ -21,7 +20,6 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import java.util.Random
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,7 +34,9 @@ private const val ARG_PARAM2 = "param2"
  */
 class FlightMapFragement : Fragment(), OnMapReadyCallback {
     private lateinit var mapView: MapView
-    private lateinit var googleMap: GoogleMap
+    private var googleMap: GoogleMap? = null
+    private var flyState: FlyState? = null
+
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -61,15 +61,16 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("map fragement OK2","map fragement OK2")
-        val button = view.findViewById<FloatingActionButton>(R.id.button)
+        val infoButton = view.findViewById<ImageButton>(R.id.infoButton)
+        val recenterButton = view.findViewById<ImageButton>(R.id.recenterButton)
         val infoList = view.findViewById<RecyclerView>(R.id.infoList)
-        val lastFlightsList = view.findViewById<RecyclerView>(R.id.lastFlights)
-        mapView = view.findViewById<MapView>(R.id.mapView)
+        val pagerView = view.findViewById<ViewPager2>(R.id.pagerView)
+        mapView = view.findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
 
-        val snapHelper = LinearSnapHelper()
-        snapHelper.attachToRecyclerView(lastFlightsList)
+        //val snapHelper = LinearSnapHelper()
+        //snapHelper.attachToRecyclerView(lastFlightsList)
 
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
 
@@ -80,7 +81,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             Log.d("OK ",it.icao24)
             viewModelDataMapFlight.fetchDataFromIcao24(it.icao24, requireContext())
             viewModelDataMapFlight.fetchFlyStateByIcao(it.icao24, requireContext())
-            viewModelDataMapFlight.fetchLastFlightsByIcao(it.icao24)
+            viewModelDataMapFlight.fetchLastFlightsByIcao(it.icao24, requireContext())
 
             //viewModelDataMapFlight.fetchDataFromIcao24(it.icao24)
         })
@@ -94,18 +95,10 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             viewModelDataMapFlight.setLatLngLstForMap(lstLatLng)
         })
 
-        button.setOnClickListener { _ ->
+        infoButton.setOnClickListener { _ ->
             viewModelDataMapFlight.getFlyStateData().observe(viewLifecycleOwner, Observer {
                 if (it.states.isEmpty())
                     return@Observer
-
-                val latLng = LatLng(it.states.first().latitude, it.states.first().longitude)
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .position(latLng)
-                        .title("Fly")
-                )
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng))
 
                 val dataset: List<Pair<String, Any>> = it.states.first().serializeToMap().toList()
                 val infoAdapter = FlyInfosViewAdapter(dataset)
@@ -117,18 +110,28 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
 
         viewModelDataMapFlight.getLastFlightsData().observe(viewLifecycleOwner, Observer {
             val dataset: List<LastFlights> = it.toList()
-            val infoAdapter = LastFlightsViewAdapter(dataset)
             Log.d("dataset", dataset.toString())
-            lastFlightsList.layoutManager = LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false)
-            lastFlightsList.adapter = infoAdapter
-            toggleViewVisibility(lastFlightsList)
+            pagerView.adapter = LastFlightsViewAdapter(dataset)
+            toggleViewVisibility(pagerView)
         })
+
+        recenterButton.setOnClickListener { _ ->
+            val state = flyState ?: return@setOnClickListener
+            val latLng = LatLng(state.latitude, state.longitude)
+
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Fly")
+            )
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        }
     }
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
-        viewModelDataMapFlight.getLatLngLstForMap().observe(viewLifecycleOwner,Observer{
+        viewModelDataMapFlight.getLatLngLstForMap().observe(viewLifecycleOwner, Observer{
 
             val color = intArrayOf(Color.BLUE,Color.BLACK,Color.GREEN)
             Log.d("OK MAP ICI","ON DESSINE ICI")
@@ -139,7 +142,23 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
                 .width(20f)              // Épaisseur de la ligne en pixels
 
             // Ajoutez la ligne du trajet à la carte
-            googleMap.addPolyline(polylineOptions)
+            googleMap?.addPolyline(polylineOptions)
+        })
+
+        viewModelDataMapFlight.getFlyStateData().observe(viewLifecycleOwner, Observer { flyStateModel ->
+            if (flyStateModel.states.isEmpty())
+                return@Observer
+
+            this.flyState = flyStateModel.states.first()
+            val state = flyState ?: return@Observer
+            val latLng = LatLng(state.latitude, state.longitude)
+
+            googleMap?.addMarker(
+                MarkerOptions()
+                    .position(latLng)
+                    .title("Fly")
+            )
+            googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
         })
     }
 

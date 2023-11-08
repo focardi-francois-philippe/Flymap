@@ -20,7 +20,7 @@ class MapViewModel:ViewModel() {
     private val BASE_URL = "https://opensky-network.org/api"
     private val REQUEST_TRACKS = BASE_URL + "/tracks/all"
 
-    fun fetchLastFlightsByIcao(icao24: String) {
+    fun fetchLastFlightsByIcao(icao24: String, context: Context? = null) {
         val nowTs = (System.currentTimeMillis() / 1000).toInt() - 3600
         val beginTs = nowTs - 259200 // 3 days in seconds
         val url = BASE_URL + "/flights/aircraft?icao24=${icao24}&begin=${beginTs}&end=${nowTs}"
@@ -35,6 +35,12 @@ class MapViewModel:ViewModel() {
                 Log.d("result", myDataList.toString())
             } catch (e: Exception) {
                 Log.e("flightList", e.localizedMessage)
+                if (context != null) {
+                    val gson = Gson()
+                    val result = Utils.getJsonDataFromAsset(context, "flights.json")
+                    val myDataList: Array<LastFlights> = gson.fromJson(result, Array<LastFlights>::class.java)
+                    lastFlightsData.postValue(myDataList)
+                }
             }
         }
     }

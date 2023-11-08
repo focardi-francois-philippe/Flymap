@@ -24,39 +24,58 @@
             android:id="@+id/infoList"
             android:layout_width="match_parent"
             android:layout_height="120dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
             android:background="#CCFFFFFF"
             android:visibility="invisible"
             map:layout_constraintEnd_toEndOf="parent"
             map:layout_constraintStart_toStartOf="parent"
             map:layout_constraintTop_toTopOf="parent" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/button"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:layout_gravity="bottom|end"
-            android:layout_margin="16dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
+        <ImageButton
+            android:id="@+id/infoButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:adjustViewBounds="true"
+            android:background="#00000000"
+            android:cropToPadding="true"
             android:elevation="4dp"
-            android:foreground="@android:drawable/ic_menu_info_details"
-            map:backgroundTint="#F44336"
-            map:layout_constraintBottom_toBottomOf="parent"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_dialog_info"
             map:layout_constraintEnd_toEndOf="parent"
-            map:layout_constraintTop_toTopOf="@+id/lastFlights" />
+            map:layout_constraintTop_toTopOf="@+id/pagerView"
+            map:tint="#F44336" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/lastFlights"
+        <ImageButton
+            android:id="@+id/recenterButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:adjustViewBounds="true"
+            android:background="#00000000"
+            android:cropToPadding="true"
+            android:elevation="4dp"
+            android:scaleType="centerInside"
+            android:src="@android:drawable/ic_menu_compass"
+            map:layout_constraintBottom_toBottomOf="@+id/pagerView"
+            map:layout_constraintEnd_toEndOf="parent"
+            map:tint="#004BBD" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/pagerView"
             android:layout_width="0dp"
             android:layout_height="120dp"
-            android:layout_gravity="bottom"
             android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:background="#FFFFFF"
+            android:backgroundTint="#FFFFFF"
             android:visibility="invisible"
             map:layout_constraintBottom_toBottomOf="parent"
-            map:layout_constraintEnd_toStartOf="@+id/button"
+            map:layout_constraintEnd_toStartOf="@+id/infoButton"
             map:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

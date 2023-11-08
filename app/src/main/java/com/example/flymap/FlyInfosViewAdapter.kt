@@ -1,5 +1,6 @@
 package com.example.flymap
 
+import android.graphics.Color
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,7 +43,12 @@ class FlyInfosViewAdapter(private val dataSet: List<Pair<String, Any>>) :
         viewHolder.infoTextView.text = dataSet[position].first
         viewHolder.infoTextView2.text = dataSet[position].second.toString()
 
-        Log.d("tst", dataSet[position].first)
+        if (position % 2 == 1) {
+            viewHolder.itemView.setBackgroundColor(Color.parseColor("#E8F8FF"))
+        }
+        else {
+            viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"))
+        }
     }
 
     // Return the size of your dataset (invoked by the layout manager)
