@@ -26,7 +26,8 @@ class FlightsListViewAdapter(private val dataSet: List<Flight>, val cellClickLis
         val fromTextView: TextView
         val toTextView: TextView
         val flyTimeTextView: TextView
-        val planeView: ImageView
+        val fromDatetime: TextView
+        val toDatetime: TextView
 
         init {
             // Define click listener for the ViewHolder's View
@@ -34,7 +35,8 @@ class FlightsListViewAdapter(private val dataSet: List<Flight>, val cellClickLis
             fromTextView = view.findViewById(R.id.fromTextView)
             toTextView = view.findViewById(R.id.toTextView)
             flyTimeTextView = view.findViewById(R.id.flyTimeTextView)
-            planeView = view.findViewById(R.id.plane)
+            fromDatetime = view.findViewById(R.id.fromDatetime)
+            toDatetime = view.findViewById(R.id.toDatetime)
         }
     }
 
@@ -62,22 +64,25 @@ class FlightsListViewAdapter(private val dataSet: List<Flight>, val cellClickLis
         val arrivalDatetime = flight.arrivalDatetime
         val flyTime = flight.flyTime
 
-        val textFrom = "$fromAirport ($fromAirportCode) $departDatetime"
-        val textTo = "" +
-                "$toAirport ($toAirportCode) $arrivalDatetime"
+        val textFrom = "$fromAirport ($fromAirportCode)"
+        val textTo = "$toAirport ($toAirportCode)"
 
         viewHolder.flighNumberTextView.text = flyNumber
         viewHolder.fromTextView.text = textFrom
         viewHolder.toTextView.text = textTo
         viewHolder.flyTimeTextView.text = flyTime
+        viewHolder.fromDatetime.text = departDatetime
+        viewHolder.toDatetime.text = arrivalDatetime
 
-        viewHolder.planeView.left += 20 * flight.currentProgress.toInt()
         viewHolder.itemView.setOnClickListener { view->
             cellClickListener.onCellClicked(flight)
             Log.d("TESTTT",flight.toString())
         }
         if (position % 2 == 1) {
             viewHolder.itemView.setBackgroundColor(Color.parseColor("#E8F8FF"))
+        }
+        else {
+            viewHolder.itemView.setBackgroundColor(Color.parseColor("#FFFFFF"))
         }
     }
 
