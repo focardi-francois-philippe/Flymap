@@ -139,6 +139,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
                 .width(20f)              // Épaisseur de la ligne en pixels
 
             // Ajoutez la ligne du trajet à la carte
+            googleMap.clear()
             googleMap.addPolyline(polylineOptions)
         })
     }
