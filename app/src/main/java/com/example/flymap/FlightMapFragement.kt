@@ -141,11 +141,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
                 .color(color.get(Random().nextInt(3)))      // Couleur de la ligne
                 .width(20f)              // Épaisseur de la ligne en pixels
 
-            // Ajoutez la ligne du trajet à la carte
-<<<<<<< HEAD
-            googleMap.clear()
-            googleMap.addPolyline(polylineOptions)
-=======
+            googleMap?.clear()
             googleMap?.addPolyline(polylineOptions)
         })
 
@@ -163,7 +159,6 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
                     .title("Fly")
             )
             googleMap?.moveCamera(CameraUpdateFactory.newLatLng(latLng))
->>>>>>> quentin
         })
     }
 
