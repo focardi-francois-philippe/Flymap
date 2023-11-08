@@ -1,5 +1,6 @@
 package com.example.flymap
 
+import android.content.Context
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -20,7 +21,7 @@ class DataAirportViewModel : ViewModel() {
     private val REQUEST_ARRIVE_URL = BASE_URL+"/flights/arrival"
 
     // Function to make the network request using viewModelScope
-     fun fetchDataFromApDepartArrive(isArrive: Boolean, airport: String, debut: Long, fin: Long) {
+     fun fetchDataFromApDepartArrive(isArrive: Boolean, airport: String, debut: Long, fin: Long, context: Context? = null) {
         Log.d("AZERTY","ok")
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -37,6 +38,13 @@ class DataAirportViewModel : ViewModel() {
             } catch (e: Exception) {
                 Log.e("flightList", e.localizedMessage)
                 // Handle network request errors here
+                if (context != null) {
+                    val gson = Gson()
+                    val result = Utils.getJsonDataFromAsset(context, "flights.json")
+                    val myDataList: List<FlightModel> =
+                        gson.fromJson(result, Array<FlightModel>::class.java).toList()
+                    flightLiveData.postValue(myDataList)
+                }
             }
         }
     }

@@ -51,7 +51,7 @@ class FlightsListActivity : AppCompatActivity() {
         if (airport != null) {
             viewModelFlight.setActivityDataAirport(DataAirportForFlightCell(isArrive,airport.city,airport.code))
         }
-        viewModelFlight.fetchDataFromApDepartArrive(isArrive,airport!!.icao, departureTs, arrivalTs)
+        viewModelFlight.fetchDataFromApDepartArrive(isArrive,airport!!.icao, departureTs, arrivalTs) //, this)
 
         viewModelFlight.getClickedFlightLiveData().observe(this, Observer {
             if (!isTablet)
