@@ -7,82 +7,93 @@
 
     <TextView
         android:id="@+id/flighNumberTextView"
-        android:layout_width="313dp"
+        android:layout_width="wrap_content"
         android:layout_height="21dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
         android:gravity="center"
         android:textSize="16sp"
-        android:textStyle="bold"
+        android:textStyle="bold|italic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Flight AF098765" />
 
-    <ImageView
-        android:id="@+id/plane"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:adjustViewBounds="false"
-        android:cropToPadding="false"
-        android:rotation="90"
-        android:src="@drawable/plane"
-        app:layout_constraintBottom_toTopOf="@+id/toTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/fromTextView"
-        app:srcCompat="@drawable/plane"
-        app:tint="#2196F3" />
-
     <TextView
         android:id="@+id/fromTextView"
-        android:layout_width="366dp"
+        android:layout_width="wrap_content"
         android:layout_height="26dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toTopOf="@+id/plane"
-        app:layout_constraintEnd_toStartOf="@+id/flyTimeTextView"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textAlignment="textStart"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/flighNumberTextView"
-        tools:text="Bastia (BIA) 18/10/23 19:05" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Bastia (BIA)" />
 
     <TextView
         android:id="@+id/toTextView"
-        android:layout_width="366dp"
+        android:layout_width="wrap_content"
         android:layout_height="29dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:textAlignment="center"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/flyTimeTextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/plane"
-        tools:text="New-York (JFK) 19/10/23 7:05" />
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:textAlignment="textEnd"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="New-York (JFK)" />
 
     <TextView
         android:id="@+id/flyTimeTextView"
         android:layout_width="wrap_content"
-        android:layout_height="83dp"
-        android:layout_marginEnd="8dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
         android:gravity="center"
         android:textSize="20sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/imageView2"
+        app:layout_constraintTop_toBottomOf="@+id/flighNumberTextView"
+        app:layout_constraintVertical_bias="1.0"
         tools:text="9h" />
 
     <ImageView
-        android:id="@+id/imageView3"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="#2196F3"
-        android:rotation="0"
-        app:layout_constraintEnd_toStartOf="@+id/plane"
+        android:id="@+id/imageView2"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/flyTimeTextView"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toEndOf="@+id/fromDatetime"
         app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="74dp" />
+        app:layout_constraintTop_toBottomOf="@+id/flighNumberTextView"
+        app:srcCompat="@drawable/chrono" />
+
+    <TextView
+        android:id="@+id/fromDatetime"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="3dp"
+        android:text="18/10/23 19:05"
+        android:textAlignment="textStart"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/fromTextView" />
+
+    <TextView
+        android:id="@+id/toDatetime"
+        android:layout_width="wrap_content"
+        android:layout_height="29dp"
+        android:layout_marginEnd="16dp"
+        android:text="18/10/23 19:05"
+        android:textAlignment="textEnd"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toTextView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

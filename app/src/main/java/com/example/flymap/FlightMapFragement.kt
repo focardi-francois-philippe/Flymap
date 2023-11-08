@@ -79,7 +79,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             // Liste de coordonnées de points de trajet (LatLng)
             Log.d("OK ",it.icao24)
             viewModelDataMapFlight.fetchDataFromIcao24(it.icao24, requireContext())
-            viewModelDataMapFlight.fetchFlyStateByIcao(it.icao24)
+            viewModelDataMapFlight.fetchFlyStateByIcao(it.icao24, requireContext())
             viewModelDataMapFlight.fetchLastFlightsByIcao(it.icao24)
 
             //viewModelDataMapFlight.fetchDataFromIcao24(it.icao24)

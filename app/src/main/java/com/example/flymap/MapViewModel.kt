@@ -38,7 +38,7 @@ class MapViewModel:ViewModel() {
             }
         }
     }
-    fun fetchFlyStateByIcao(icao24: String) {
+    fun fetchFlyStateByIcao(icao24: String, context: Context? = null) {
         val url = BASE_URL + "/states/all?icao24=${icao24}"
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -50,6 +50,13 @@ class MapViewModel:ViewModel() {
                 Log.d("result", myDataList.toString())
             } catch (e: Exception) {
                 Log.e("flightList", e.localizedMessage)
+                if (context != null) {
+                    val gson = Gson()
+                    val result = Utils.getJsonDataFromAsset(context, "state.json")
+                    val myDataList: FlyStateModelGson = gson.fromJson(result, FlyStateModelGson::class.java)
+                    flyStateData.postValue(myDataList.toModel())
+                    Log.d("result", myDataList.toModel().toString())
+                }
             }
         }
     }
