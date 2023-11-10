@@ -10,6 +10,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MapViewModel:ViewModel() {
     val mapFlightData = MutableLiveData<DataMapFlight>()
@@ -19,11 +20,12 @@ class MapViewModel:ViewModel() {
 
     private val BASE_URL = "https://opensky-network.org/api"
     private val REQUEST_TRACKS = BASE_URL + "/tracks/all"
-
+    private val REQUEST_STATE = BASE_URL+ "/states/all"
+    private val REQUEST_AIRCRAFT = BASE_URL+ "/flights/aircraft"
     fun fetchLastFlightsByIcao(icao24: String, context: Context? = null) {
         val nowTs = (System.currentTimeMillis() / 1000).toInt() - 3600
         val beginTs = nowTs - 259200 // 3 days in seconds
-        val url = BASE_URL + "/flights/aircraft?icao24=${icao24}&begin=${beginTs}&end=${nowTs}"
+        val url = REQUEST_AIRCRAFT + "?icao24=${icao24}&begin=${beginTs}&end=${nowTs}"
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -40,12 +42,15 @@ class MapViewModel:ViewModel() {
                     val result = Utils.getJsonDataFromAsset(context, "flights.json")
                     val myDataList: Array<LastFlights> = gson.fromJson(result, Array<LastFlights>::class.java)
                     lastFlightsData.postValue(myDataList)
+                    withContext(Dispatchers.Main) {
+                        Utils.showShortToast(context,"Lecture fichier flights.json")
+                    }
                 }
             }
         }
     }
     fun fetchFlyStateByIcao(icao24: String, context: Context? = null) {
-        val url = BASE_URL + "/states/all?icao24=${icao24}"
+        val url = REQUEST_STATE + "?icao24=${icao24}"
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val result =  RequestManager.getSuspended(url, HashMap())
@@ -62,6 +67,9 @@ class MapViewModel:ViewModel() {
                     val myDataList: FlyStateModelGson = gson.fromJson(result, FlyStateModelGson::class.java)
                     flyStateData.postValue(myDataList.toModel())
                     Log.d("result", myDataList.toModel().toString())
+                    withContext(Dispatchers.Main) {
+                        Utils.showShortToast(context,"Lecture fichier state.json")
+                    }
                 }
             }
         }
@@ -71,21 +79,27 @@ class MapViewModel:ViewModel() {
             try {
                 Log.d("AZERTY2","ok")
 
-                //val result =  RequestManager.getSuspended(
-                //    "$REQUEST_TRACKS?icao24=$icao&time=0",
-                //    HashMap())
-               val jsonFileString = Utils.getJsonDataFromAsset(context, "flight.json")
-               Log.i("data", jsonFileString!!)
-                val gson = Gson()
-                //val myDataList: DataMapFlight =  gson.fromJson(result, DataMapFlight::class.java)
+                val result =  RequestManager.getSuspended(
+                    "$REQUEST_TRACKS?icao24=$icao&time=0",
+                    HashMap())
 
-                val myDataList: DataMapFlight =  gson.fromJson(jsonFileString, DataMapFlight::class.java)
+
+                val gson = Gson()
+                val myDataList: DataMapFlight =  gson.fromJson(result, DataMapFlight::class.java)
+
+
                 Log.d("result",myDataList.toString())
                // Log.d("result",myDataList.path.get(0).toString())
                 mapFlightData.postValue(myDataList) // Update the LiveData with the result
             } catch (e: Exception) {
                 Log.e("flightList", e.localizedMessage)
-                // Handle network request errors here
+                val gson = Gson()
+                val jsonFileString = Utils.getJsonDataFromAsset(context, "flight.json")
+                val myDataList: DataMapFlight =  gson.fromJson(jsonFileString, DataMapFlight::class.java)
+                withContext(Dispatchers.Main) {
+                    Utils.showShortToast(context,"Lecture fichier flight.json")
+                }
+                mapFlightData.postValue(myDataList)
             }
         }
     }

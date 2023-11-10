@@ -3,6 +3,7 @@ package com.example.flymap
 import android.content.Context
 import android.os.Build
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -243,6 +244,9 @@ class Utils private constructor() {
             val date = Date(timestamp * 1000) // Convert seconds to milliseconds
 
             return dateFormat.format(date)
+        }
+        fun showShortToast(context: Context, message: String) {
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
         }
     }
 }

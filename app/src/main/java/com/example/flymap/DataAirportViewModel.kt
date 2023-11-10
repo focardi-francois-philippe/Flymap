@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DataAirportViewModel : ViewModel() {
 
@@ -43,7 +44,12 @@ class DataAirportViewModel : ViewModel() {
                     val result = Utils.getJsonDataFromAsset(context, "flights.json")
                     val myDataList: List<FlightModel> =
                         gson.fromJson(result, Array<FlightModel>::class.java).toList()
+                    withContext(Dispatchers.Main) {
+                        Utils.showShortToast(context,"Lecture fichier flights")
+                    }
                     flightLiveData.postValue(myDataList)
+
+
                 }
             }
         }

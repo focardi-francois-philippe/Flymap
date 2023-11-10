@@ -131,6 +131,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
         val viewModelDataMapFlight = ViewModelProvider(requireActivity()).get(MapViewModel::class.java)
+        Log.d("OK MAP ICI","ON va dessiner ICI")
         viewModelDataMapFlight.getLatLngLstForMap().observe(viewLifecycleOwner, Observer{
 
             val color = intArrayOf(Color.BLUE,Color.BLACK,Color.GREEN)
@@ -139,7 +140,7 @@ class FlightMapFragement : Fragment(), OnMapReadyCallback {
             val polylineOptions = PolylineOptions()
                 .addAll(it)  // Ajoutez la liste de points au trajet
                 .color(color.get(Random().nextInt(3)))      // Couleur de la ligne
-                .width(20f)              // Épaisseur de la ligne en pixels
+                .width(10f)              // Épaisseur de la ligne en pixels
 
             googleMap?.clear()
             googleMap?.addPolyline(polylineOptions)
